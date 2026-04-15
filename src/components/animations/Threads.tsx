@@ -25,13 +25,13 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 40;
-const float u_line_width = 7.0;
-const float u_line_blur = 10.0;
+const int u_line_count = 15;
+const float u_line_width = 4.0;
+const float u_line_blur = 5.0;
 
 float Perlin2D(vec2 P) {
     vec2 Pi = floor(P);
-    vec4 Pf_Pfmin1 = P.xyxy - vec4(Pi, Pi + 1.0);
+    vec2 Pf = fract(P);
     vec4 Pt = vec4(Pi.xy, Pi.xy + 1.0);
     Pt = Pt - floor(Pt * (1.0 / 71.0)) * 71.0;
     Pt += vec2(26.0, 161.0).xyxy;
@@ -39,15 +39,16 @@ float Perlin2D(vec2 P) {
     Pt = Pt.xzxz * Pt.yyww;
     vec4 hash_x = fract(Pt * (1.0 / 951.135664));
     vec4 hash_y = fract(Pt * (1.0 / 642.949883));
-    vec4 grad_x = hash_x - 0.49999;
-    vec4 grad_y = hash_y - 0.49999;
+    vec4 grad_x = hash_x - 0.5;
+    vec4 grad_y = hash_y - 0.5;
     vec4 grad_results = inversesqrt(grad_x * grad_x + grad_y * grad_y)
-        * (grad_x * Pf_Pfmin1.xzxz + grad_y * Pf_Pfmin1.yyww);
-    grad_results *= 1.4142135623730950;
-    vec2 blend = Pf_Pfmin1.xy * Pf_Pfmin1.xy * Pf_Pfmin1.xy
-               * (Pf_Pfmin1.xy * (Pf_Pfmin1.xy * 6.0 - 15.0) + 10.0);
-    vec4 blend2 = vec4(blend, vec2(1.0 - blend));
-    return dot(grad_results, blend2.zxzx * blend2.wwyy);
+        * (grad_x * (Pf.x - vec4(0, 1, 0, 1)) + grad_y * (Pf.y - vec4(0, 0, 1, 1)));
+    
+    vec2 blend = Pf * Pf * Pf * (Pf * (Pf * 6.0 - 15.0) + 10.0);
+    
+    float res = mix(mix(grad_results.x, grad_results.y, blend.x),
+                    mix(grad_results.z, grad_results.w, blend.x), blend.y);
+    return res * 1.414;
 }
 
 float pixel(float count, vec2 resolution) {
@@ -126,6 +127,7 @@ type ThreadsProps = {
   distance?: number;
   enableMouseInteraction?: boolean;
   className?: string;
+  dpr?: number;
 };
 
 export default function Threads({
@@ -134,6 +136,7 @@ export default function Threads({
   distance = 0,
   enableMouseInteraction = false,
   className,
+  dpr = 1,
 }: ThreadsProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationFrameId = useRef<number | null>(null);
@@ -142,7 +145,7 @@ export default function Threads({
     if (!containerRef.current) return;
 
     const container = containerRef.current;
-    const renderer = new Renderer({ alpha: true });
+    const renderer = new Renderer({ alpha: true, dpr });
     const gl = renderer.gl;
 
     gl.clearColor(0, 0, 0, 0);
@@ -151,13 +154,15 @@ export default function Threads({
     container.appendChild(gl.canvas);
 
     const geometry = new Triangle(gl);
+    const [r, g, b] = color;
+
     const program = new Program(gl, {
       vertex: vertexShader,
       fragment: fragmentShader,
       uniforms: {
         iTime: { value: 0 },
         iResolution: { value: new Vec3(1, 1, 1) },
-        uColor: { value: new Color(...color) },
+        uColor: { value: new Color(r, g, b) },
         uAmplitude: { value: amplitude },
         uDistance: { value: distance },
         uMouse: { value: new Vec3(0.5, 0.5, 0) },
@@ -229,7 +234,7 @@ export default function Threads({
 
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [amplitude, color, distance, enableMouseInteraction]);
+  }, [amplitude, color, distance, enableMouseInteraction, dpr]);
 
   return <div ref={containerRef} className={className ?? 'relative h-full w-full'} />;
 }
