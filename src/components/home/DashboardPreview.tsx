@@ -1,9 +1,20 @@
+"use client";
+
+import { motion } from 'framer-motion';
+import { sectionFadeIn } from '@/modules/shared';
+
 export default function DashboardPreview() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Dashboard Container */}
-        <div className="bg-gray-50 rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        <motion.div
+          className="bg-gray-50 rounded-2xl shadow-2xl overflow-hidden border border-gray-200"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={sectionFadeIn}
+        >
           {/* Browser Chrome */}
           <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-2">
             <div className="flex gap-2">
@@ -185,7 +196,7 @@ export default function DashboardPreview() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

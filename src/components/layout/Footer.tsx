@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { APP_NAME } from '@/constants';
+import { FOOTER_LEGAL_LINKS, FOOTER_LINK_GROUPS } from '@/modules/layout';
 
 export default function Footer() {
   return (
@@ -11,7 +13,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg font-poppins">Q</span>
               </div>
-              <span className="text-xl font-bold text-gray-900 font-poppins">QuizSync</span>
+              <span className="text-xl font-bold text-gray-900 font-poppins">{APP_NAME}</span>
             </Link>
             <p className="text-sm text-gray-600 mb-4 max-w-xs">
               Enterprise-grade technical hiring platform for modern engineering teams.
@@ -36,92 +38,22 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Product Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
-              Product
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/features" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Features
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link href="/integrations" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Integrations
-                </Link>
-              </li>
-              <li>
-                <Link href="/changelog" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Changelog
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
-              Resources
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/documentation" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/question-library" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Question Library
-                </Link>
-              </li>
-              <li>
-                <Link href="/hiring-guides" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Hiring Guides
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
-              Company
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/about" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/partners" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Partners
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {FOOTER_LINK_GROUPS.map((group) => (
+            <div key={group.title}>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
+                {group.title}
+              </h3>
+              <ul className="space-y-3">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         {/* Bottom Bar */}
@@ -130,15 +62,11 @@ export default function Footer() {
             © 2024 QuizSync Inc. All rights reserved.
           </p>
           <div className="flex items-center space-x-6">
-            <Link href="/privacy" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Terms of Service
-            </Link>
-            <Link href="/security" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Security
-            </Link>
+            {FOOTER_LEGAL_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

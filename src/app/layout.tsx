@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "@/components/layout";
+import { APP_DESCRIPTION, APP_NAME } from "@/constants";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,8 +18,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "QuizSync - Create and Share Quizzes",
-  description: "Create, share, and take quizzes with QuizSync",
+  title: `${APP_NAME} - Create and Share Quizzes`,
+  description: APP_DESCRIPTION,
 };
 
 export default function RootLayout({

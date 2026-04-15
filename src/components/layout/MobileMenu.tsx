@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { MAIN_NAV_LINKS } from '@/modules/layout';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,27 +37,16 @@ export default function MobileMenu() {
       {isOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg">
           <div className="px-4 py-4 space-y-3">
-            <Link 
-              href="/features" 
-              className="block text-gray-600 hover:text-gray-900 py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              Features
-            </Link>
-            <Link 
-              href="/pricing" 
-              className="block text-gray-600 hover:text-gray-900 py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              Pricing
-            </Link>
-            <Link 
-              href="/about" 
-              className="block text-gray-600 hover:text-gray-900 py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              About
-            </Link>
+            {MAIN_NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block text-gray-600 hover:text-gray-900 py-2"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
             <div className="pt-3 border-t border-gray-200 space-y-2">
               <Link 
                 href="/login" 
