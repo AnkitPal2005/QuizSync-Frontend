@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState('Last 30 Days');

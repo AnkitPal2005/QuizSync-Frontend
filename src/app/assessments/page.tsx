@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Filter, MoreVertical, Users, Clock, BarChart3 } from 'lucide-react';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function AssessmentsPage() {
   const [searchQuery, setSearchQuery] = useState('');

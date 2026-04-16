@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronLeft, Eye, Link2, Share2, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function AssessmentDetailPage() {
   const router = useRouter();
