@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { Sidebar } from '@/components/layout';
-import { Bell, Lock, Users, CreditCard, Globe, Mail, Shield, Zap } from 'lucide-react';
+import { Bell, Lock, Users, CreditCard, Globe, Mail, Zap } from 'lucide-react';
+import { useToast } from '@/hooks';
+import { ToastContainer } from '@/components/shared';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
@@ -11,6 +13,14 @@ export default function SettingsPage() {
     push: false,
     sms: false,
   });
+  const [formData, setFormData] = useState({
+    companyName: 'QuizSync Inc.',
+    website: 'https://quizsync.com',
+    timezone: 'Pacific Time (PT)',
+    language: 'English (US)',
+  });
+  const [hasChanges, setHasChanges] = useState(false);
+  const { toasts, success, error, info, removeToast } = useToast();
 
   const tabs = [
     { id: 'general', label: 'General', icon: Globe },
@@ -21,9 +31,70 @@ export default function SettingsPage() {
     { id: 'integrations', label: 'Integrations', icon: Zap },
   ];
 
+  // Button Handlers
+  const handleChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+    setHasChanges(true);
+  };
+
+  const handleSaveGeneral = () => {
+    setTimeout(() => {
+      success('Settings saved successfully!');
+      setHasChanges(false);
+    }, 300);
+  };
+
+  const handleCancelGeneral = () => {
+    setFormData({
+      companyName: 'QuizSync Inc.',
+      website: 'https://quizsync.com',
+      timezone: 'Pacific Time (PT)',
+      language: 'English (US)',
+    });
+    setHasChanges(false);
+    info('Changes discarded');
+  };
+
+  const handleToggleNotification = (key: keyof typeof notifications) => {
+    const newValue = !notifications[key];
+    setNotifications({ ...notifications, [key]: newValue });
+    success(`${key.charAt(0).toUpperCase() + key.slice(1)} notifications ${newValue ? 'enabled' : 'disabled'}`);
+  };
+
+  const handleUpdatePassword = () => {
+    success('Password updated successfully!');
+  };
+
+  const handleEnable2FA = () => {
+    success('Two-factor authentication enabled!');
+  };
+
+  const handleInviteMember = () => {
+    success('Invitation sent successfully!');
+  };
+
+  const handleRemoveMember = (name: string) => {
+    if (confirm(`Remove ${name} from the team?`)) {
+      success(`${name} removed from team`);
+    }
+  };
+
+  const handleDownloadInvoice = (invoice: string) => {
+    success(`Downloading ${invoice}...`);
+  };
+
+  const handleToggleIntegration = (name: string, connected: boolean) => {
+    if (connected) {
+      success(`${name} disconnected`);
+    } else {
+      success(`${name} connected successfully!`);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -76,7 +147,8 @@ export default function SettingsPage() {
                         </label>
                         <input
                           type="text"
-                          defaultValue="QuizSync Inc."
+                          value={formData.companyName}
+                          onChange={(e) => handleChange('companyName', e.target.value)}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                       </div>
@@ -88,7 +160,8 @@ export default function SettingsPage() {
                         </label>
                         <input
                           type="url"
-                          defaultValue="https://quizsync.com"
+                          value={formData.website}
+                          onChange={(e) => handleChange('website', e.target.value)}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                       </div>
@@ -120,10 +193,18 @@ export default function SettingsPage() {
                       </div>
 
                       <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                        <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        <button 
+                          onClick={handleCancelGeneral}
+                          disabled={!hasChanges}
+                          className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                           Cancel
                         </button>
-                        <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                        <button 
+                          onClick={handleSaveGeneral}
+                          disabled={!hasChanges}
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                           Save Changes
                         </button>
                       </div>
@@ -151,7 +232,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <button
-                          onClick={() => setNotifications({ ...notifications, email: !notifications.email })}
+                          onClick={() => handleToggleNotification('email')}
                           className={`relative w-11 h-6 rounded-full transition-colors ${
                             notifications.email ? 'bg-indigo-600' : 'bg-gray-300'
                           }`}
@@ -176,7 +257,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <button
-                          onClick={() => setNotifications({ ...notifications, push: !notifications.push })}
+                          onClick={() => handleToggleNotification('push')}
                           className={`relative w-11 h-6 rounded-full transition-colors ${
                             notifications.push ? 'bg-indigo-600' : 'bg-gray-300'
                           }`}
@@ -201,7 +282,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <button
-                          onClick={() => setNotifications({ ...notifications, sms: !notifications.sms })}
+                          onClick={() => handleToggleNotification('sms')}
                           className={`relative w-11 h-6 rounded-full transition-colors ${
                             notifications.sms ? 'bg-indigo-600' : 'bg-gray-300'
                           }`}
@@ -287,7 +368,10 @@ export default function SettingsPage() {
                             <h3 className="text-sm font-semibold text-gray-900">Two-Factor Authentication</h3>
                             <p className="text-xs text-gray-600 mt-1">Add an extra layer of security to your account</p>
                           </div>
-                          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                          <button 
+                            onClick={handleEnable2FA}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
+                          >
                             Enable 2FA
                           </button>
                         </div>
@@ -320,7 +404,10 @@ export default function SettingsPage() {
                         <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
                           Cancel
                         </button>
-                        <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                        <button 
+                          onClick={handleUpdatePassword}
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
+                        >
                           Update Password
                         </button>
                       </div>
@@ -334,7 +421,10 @@ export default function SettingsPage() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold text-gray-900">Team Members</h2>
-                    <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                    <button 
+                      onClick={handleInviteMember}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
+                    >
                       Invite Member
                     </button>
                   </div>
@@ -384,7 +474,10 @@ export default function SettingsPage() {
                               </span>
                             </td>
                             <td className="py-4 px-4">
-                              <button className="text-sm text-red-600 hover:text-red-700 font-medium">
+                              <button 
+                                onClick={() => handleRemoveMember(member.name)}
+                                className="text-sm text-red-600 hover:text-red-700 font-medium"
+                              >
                                 Remove
                               </button>
                             </td>
@@ -468,7 +561,10 @@ export default function SettingsPage() {
                             <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
                               {item.status}
                             </span>
-                            <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                            <button 
+                              onClick={() => handleDownloadInvoice(item.invoice)}
+                              className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                            >
                               Download
                             </button>
                           </div>
@@ -503,7 +599,9 @@ export default function SettingsPage() {
                             </div>
                           </div>
                         </div>
-                        <button className={`w-full px-4 py-2 rounded-lg text-sm font-semibold ${
+                        <button 
+                          onClick={() => handleToggleIntegration(integration.name, integration.connected)}
+                          className={`w-full px-4 py-2 rounded-lg text-sm font-semibold ${
                           integration.connected
                             ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             : 'bg-indigo-600 text-white hover:bg-indigo-700'

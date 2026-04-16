@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Sidebar } from '@/components/layout';
-import { Download, Calendar, TrendingUp, TrendingDown, MoreVertical } from 'lucide-react';
+import { Download, TrendingUp, TrendingDown, MoreVertical } from 'lucide-react';
+import { useToast } from '@/hooks';
+import { ToastContainer } from '@/components/shared';
+import { buttonActions } from '@/lib/buttonActions';
 
 export default function ReportsPage() {
   const [timeFilter, setTimeFilter] = useState('Last 30 Days');
   const [assessmentFilter, setAssessmentFilter] = useState('All Assessments');
+  const { toasts, success, error, removeToast } = useToast();
 
   const stats = [
     { label: 'Total Candidates', value: '1,248', change: '↑ 12% from last month', trend: 'up' },
@@ -29,9 +32,39 @@ export default function ReportsPage() {
     { range: 'Below Avg (<60)', count: 238, percentage: 19 },
   ];
 
+  // Button Handlers
+  const handleExport = () => {
+    const exportData = [
+      { Metric: 'Total Candidates', Value: '1,248', Change: '↑ 12%' },
+      { Metric: 'Average Score', Value: '76/100', Change: '↑ 4.2%' },
+      { Metric: 'Completion Rate', Value: '89%', Change: '↓ 1.5%' },
+      { Metric: 'Avg. Time Spent', Value: '42m', Change: 'Consistent' },
+      ...assessmentBreakdown.map(a => ({
+        Assessment: a.name,
+        Candidates: a.candidates,
+        'Avg Score': `${a.avgScore}%`,
+        Completion: `${a.completion}%`,
+        'Plagiarism Flags': a.flagged,
+      })),
+    ];
+
+    if (buttonActions.exportToCSV(exportData, `report-${timeFilter.replace(/\s+/g, '-').toLowerCase()}.csv`)) {
+      success('Report exported successfully!');
+    } else {
+      error('Failed to export report');
+    }
+  };
+
+  const handlePrint = () => {
+    if (buttonActions.print()) {
+      success('Print dialog opened');
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -61,7 +94,10 @@ export default function ReportsPage() {
                 <option>Last 90 Days</option>
                 <option>Last Year</option>
               </select>
-              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+              <button 
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
+              >
                 <Download className="w-4 h-4" />
                 Export
               </button>

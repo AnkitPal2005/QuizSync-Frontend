@@ -4,13 +4,58 @@ import { useState } from 'react';
 import { ChevronLeft, Eye, Link2, Share2, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
+import { useToast } from '@/hooks/useToast';
+import { ToastContainer } from '@/components/shared/Toast';
 
 export default function AssessmentDetailPage() {
   const router = useRouter();
+  const { toasts, removeToast, success } = useToast();
   const [activeTab, setActiveTab] = useState<'details' | 'questions' | 'settings'>('questions');
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [timeLimit, setTimeLimit] = useState(true);
   const [randomizeOptions, setRandomizeOptions] = useState(true);
+
+  const handlePreview = () => {
+    success('Opening preview...');
+    // Simulate opening preview
+    setTimeout(() => {
+      success('Preview mode activated! You can now see how candidates will experience this assessment.');
+    }, 500);
+  };
+
+  const handleGetLink = () => {
+    const assessmentLink = `${window.location.origin}/assessment?id=senior-frontend-react`;
+    navigator.clipboard.writeText(assessmentLink);
+    success('Assessment link copied to clipboard!');
+  };
+
+  const handlePublish = () => {
+    success('Publishing assessment...');
+    setTimeout(() => {
+      success('Assessment published successfully! Candidates can now access it.');
+    }, 1000);
+  };
+
+  const handleCreateNewQuestion = () => {
+    success('Opening question editor...');
+    setTimeout(() => {
+      success('New question created! You can now add question details.');
+    }, 500);
+  };
+
+  const handleAddFromQuestionBank = () => {
+    success('Opening question bank...');
+    setTimeout(() => {
+      success('Question bank loaded! Select questions to add to this assessment.');
+    }, 500);
+  };
+
+  const handleAddSection = () => {
+    success('Creating new section...');
+    setTimeout(() => {
+      success('New section added! You can now add questions to this section.');
+    }, 500);
+  };
 
   const sections = [
     { id: 1, name: 'React Core', questions: 3 },
@@ -54,15 +99,24 @@ export default function AssessmentDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <button 
+                onClick={handlePreview}
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Eye className="w-4 h-4" />
                 Preview
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+              <button 
+                onClick={handleGetLink}
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Link2 className="w-4 h-4" />
                 Get Link
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <button 
+                onClick={handlePublish}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
                 <Share2 className="w-4 h-4" />
                 Publish
               </button>
@@ -128,7 +182,10 @@ export default function AssessmentDetailPage() {
                     <span className="text-xs text-gray-500">{section.questions} Qs</span>
                   </div>
                 ))}
-                <button className="w-full flex items-center justify-center gap-2 p-3 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
+                <button 
+                  onClick={handleAddSection}
+                  className="w-full flex items-center justify-center gap-2 p-3 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                   Add Section
                 </button>
@@ -229,11 +286,17 @@ export default function AssessmentDetailPage() {
               </div>
 
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                <button 
+                  onClick={handleCreateNewQuestion}
+                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                   Create New Question
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50">
+                <button 
+                  onClick={handleAddFromQuestionBank}
+                  className="flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                   Add from Question Bank
                 </button>
@@ -375,6 +438,9 @@ export default function AssessmentDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </div>
   );
 }

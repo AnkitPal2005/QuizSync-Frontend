@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ProctoringPanel from '@/components/proctoring/ProctoringPanel';
 
 const questions = [
   {
@@ -165,6 +166,7 @@ export default function CodingInterface() {
   const [code, setCode] = useState(questions[0].starterCode.python);
   const [activeTab, setActiveTab] = useState<'description' | 'testcases'>('description');
   const [timeLeft, setTimeLeft] = useState('01:29:45');
+  const [proctoringMinimized, setProctoringMinimized] = useState(false);
 
   const question = questions[currentQuestion];
 
@@ -183,7 +185,9 @@ export default function CodingInterface() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex bg-white">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
@@ -471,6 +475,14 @@ export default function CodingInterface() {
           </div>
         </div>
       </div>
+
+      </div>
+
+      {/* Proctoring Panel */}
+      <ProctoringPanel 
+        isMinimized={proctoringMinimized}
+        onToggleMinimize={() => setProctoringMinimized(!proctoringMinimized)}
+      />
     </div>
   );
 }

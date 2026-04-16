@@ -3,9 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
+import { useToast } from '@/hooks';
+import { ToastContainer } from '@/components/shared';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState('Last 30 Days');
+  const { toasts, success, info, removeToast } = useToast();
+  const router = useRouter();
 
   const stats = [
     { label: 'Active Assessments', value: '24', change: '↑ 12%', trend: 'up', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', color: 'indigo' },
@@ -30,6 +35,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -42,13 +48,19 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center gap-1.5">
+              <button 
+                onClick={() => success('Invite feature coming soon!')}
+                className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center gap-1.5"
+              >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
                 Invite
               </button>
-              <button className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 flex items-center gap-1.5">
+              <button 
+                onClick={() => router.push('/assessments/new')}
+                className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 flex items-center gap-1.5"
+              >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
@@ -190,7 +202,10 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              <button className="w-full mt-4 text-xs text-indigo-600 hover:text-indigo-700 font-semibold">
+              <button 
+                onClick={() => info('Viewing all activity...')}
+                className="w-full mt-4 text-xs text-indigo-600 hover:text-indigo-700 font-semibold"
+              >
                 View All Activity
               </button>
             </div>
@@ -200,7 +215,10 @@ export default function DashboardPage() {
           <div className="mt-4 bg-white rounded-lg border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-bold text-gray-900">Active Assessments</h3>
-              <button className="text-xs text-indigo-600 hover:text-indigo-700 font-semibold">
+              <button 
+                onClick={() => router.push('/assessments')}
+                className="text-xs text-indigo-600 hover:text-indigo-700 font-semibold"
+              >
                 View All
               </button>
             </div>

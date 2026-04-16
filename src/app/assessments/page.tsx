@@ -4,10 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Filter, MoreVertical, Users, Clock, BarChart3 } from 'lucide-react';
 import Sidebar from '@/components/layout/Sidebar';
+import { useToast } from '@/hooks';
+import { ToastContainer } from '@/components/shared';
+import { useRouter } from 'next/navigation';
 
 export default function AssessmentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const { toasts, success, error, info, removeToast } = useToast();
+  const router = useRouter();
 
   const assessments = [
     {
@@ -100,6 +105,7 @@ export default function AssessmentsPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -112,14 +118,22 @@ export default function AssessmentsPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center gap-1.5">
+              <button 
+                onClick={() => {
+                  success('Invite feature coming soon!');
+                }}
+                className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center gap-1.5"
+              >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
                 Invite
               </button>
               <Link href="/assessments/new">
-                <button className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 flex items-center gap-1.5">
+                <button 
+                  onClick={() => info('Creating new assessment...')}
+                  className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 flex items-center gap-1.5"
+                >
                   <Plus className="w-3.5 h-3.5" />
                   New Assessment
                 </button>
