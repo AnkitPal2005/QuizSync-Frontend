@@ -25,6 +25,15 @@ const assessmentRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
+  // DEVELOPMENT MODE: Bypass authentication
+  // TODO: Remove this in production and implement proper authentication
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  if (isDevelopment) {
+    // In development, allow all routes
+    return NextResponse.next();
+  }
+  
   // Check if user is authenticated (you'll replace this with actual auth check)
   const isAuthenticated = request.cookies.get('auth-token')?.value;
   const isAdmin = request.cookies.get('user-role')?.value === 'admin';
