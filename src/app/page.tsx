@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
@@ -8,9 +10,18 @@ export default function Home() {
         FAANG Level Assessment Platform
       </p>
       
-      <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-all rounded-lg font-semibold shadow-lg shadow-blue-500/30">
-        Get Started
-      </button>
+      <div className="flex gap-4">
+        <Link href="/assessments/1">
+          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-all rounded-lg font-semibold shadow-lg shadow-blue-500/30">
+            View Assessment
+          </button>
+        </Link>
+        <Link href="/dashboard">
+          <button className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 transition-all rounded-lg font-semibold shadow-lg shadow-emerald-500/30">
+            Dashboard
+          </button>
+        </Link>
+      </div>
     </main>
   );
 }
