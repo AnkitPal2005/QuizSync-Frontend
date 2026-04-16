@@ -7,6 +7,11 @@ export const ROUTES = {
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgot-password',
   
+  // Landing page sections
+  FEATURES: '/#features',
+  PRICING: '/#pricing',
+  ABOUT: '/#about',
+  
   // Admin Routes (Protected)
   DASHBOARD: '/dashboard',
   ASSESSMENTS: '/assessments',
