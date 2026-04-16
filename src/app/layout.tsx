@@ -12,13 +12,13 @@ const inter = Inter({
 
 const poppins = Poppins({
   variable: "--font-poppins",
-  subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} - Create and Share Quizzes`,
+  title: `${APP_NAME} - Technical Assessment Platform`,
   description: APP_DESCRIPTION,
 };
 
